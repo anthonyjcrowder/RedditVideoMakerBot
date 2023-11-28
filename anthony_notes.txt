@@ -1,0 +1,32 @@
+Default Python environment found using "which python3" /opt/homebrew/bin/python3
+new python environment for using 3.10: Library/Frameworks/Python.framework/Versions/3.10
+
+How to create virtual environment and use python 3.10 (or any python version) - 
+	Navigate to directory for project
+	Use command: python3.10 -m venv my_env_name
+	then in a terminal use command: source venvRedditVideoMakerBot/bin/activate
+	
+Installing packages for script
+	sudo pip install -r requirements.txt
+	Should work after above step but if not follow below step
+		Install any remaining needed packages from following command: bash <(curl -sL https://raw.githubusercontent.com/elebumm/RedditVideoMakerBot/master/install.sh)
+	
+Using script
+	run main.py in sudo to enable write priveleges
+	command: sudo python3 main.py TOKENIZERS_PARALLELISM=false
+	- update storymode to true for story subreddits (such as horror stories)
+	
+	
+Troubleshooting:
+	- No module named "prawcore"
+		Solution: pip3 install prawcore ?
+	- Kept getting error for "random_voice" so I commented out or deleted all code that had that variable set
+	- getting 
+
+DEBUGGING:
+	- drop breakpoint in vscode
+	- make sure to use venv in vscode terminal by using below command
+		source venvRedditVideoMakerBot/bin/activate
+	- CRITICAL. for this project, start debugging in main.py script. anything else seems to throw an error
+	- run debugger, it'll automatically hit breakpoints
+	

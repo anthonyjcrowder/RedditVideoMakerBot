@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import math
 import sys
+import os
 from os import name
 from pathlib import Path
 from subprocess import Popen
@@ -25,6 +26,9 @@ from video_creation.screenshot_downloader import get_screenshots_of_reddit_posts
 from video_creation.voices import save_text_to_mp3
 from utils.ffmpeg_install import ffmpeg_install
 
+# dir_path = os.path.dirname(os.path.realpath(__file__))
+# print(dir_path)
+
 __VERSION__ = "3.2.1"
 
 print(
@@ -46,7 +50,8 @@ checkversion(__VERSION__)
 
 def main(POST_ID=None) -> None:
     global redditid, reddit_object
-    reddit_object = get_subreddit_threads(POST_ID)
+    reddit_object = get_subreddit_threads(POST_ID) 
+    #TODO: come back and make sure that the author comments get properly screenshotted and added if the authorreplies variable in .config.template.toml is set to true
     redditid = id(reddit_object)
     length, number_of_comments = save_text_to_mp3(reddit_object)
     length = math.ceil(length)

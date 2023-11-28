@@ -121,6 +121,7 @@ def get_subreddit_threads(POST_ID: str):
 
     content["thread_url"] = threadurl
     content["thread_title"] = submission.title
+    content["thread_author"] = submission.author.name
     content["thread_id"] = submission.id
     content["is_nsfw"] = submission.over_18
     content["comments"] = []
@@ -129,6 +130,42 @@ def get_subreddit_threads(POST_ID: str):
             content["thread_post"] = posttextparser(submission.selftext)
         else:
             content["thread_post"] = submission.selftext
+    elif settings.config["settings"]["authorreplies"]:
+        for top_level_comment in submission.comments:
+            if isinstance(top_level_comment, MoreComments):
+                continue
+
+            if top_level_comment.body in ["[removed]", "[deleted]"]:
+                continue  # # see https://github.com/JasonLovesDoggo/RedditVideoMakerBot/issues/78
+            if not top_level_comment.stickied:
+                sanitised = sanitize_text(top_level_comment.body)
+                if not sanitised or sanitised == " ":
+                    continue
+                if len(top_level_comment.body) <= int(
+                    settings.config["reddit"]["thread"]["max_comment_length"]
+                ):
+                    if len(top_level_comment.body) >= int(
+                        settings.config["reddit"]["thread"]["min_comment_length"]
+                    ):
+                        if (
+                            top_level_comment.author is not None
+                            and sanitize_text(top_level_comment.body) is not None
+                        ):  # if errors occur with this change to if not.
+                            #store comment replies into an array if author responded
+                            replies = []
+                            #loop over each reply and see if original author responded
+                            for reply in top_level_comment.replies:
+                                if submission.author.name == reply.author.name:
+                                    content["comments"].append(
+                                        {
+                                            "comment_body": top_level_comment.body,
+                                            "comment_url": top_level_comment.permalink,
+                                            "comment_id": top_level_comment.id,
+                                            "reply_body": reply.body,
+                                            "reply_url": reply.permalink,
+                                            "reply_id": reply.id
+                                        }
+                                    )
     else:
         for top_level_comment in submission.comments:
             if isinstance(top_level_comment, MoreComments):
